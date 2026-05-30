@@ -1,0 +1,1808 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sumak Mkhuna Express | Menú Digital & Delivery</title>
+    
+    <!-- Metaetiquetas SEO básicas -->
+    <meta name="description" content="Pide la mejor comida a domicilio en Sumak Mkhuna Express. Hamburguesas, platos a la carta, alitas, picadas y almuerzos del día directo a tu hogar.">
+    <meta name="keywords" content="comida a domicilio, delivery, hamburguesas, platos a la carta, alitas, picadas, almuerzos, Sumak Mkhuna Express">
+    <meta name="author" content="Sumak Mkhuna Express">
+    
+    <!-- Fuentes modernas desde System Fonts para rendimiento extremo -->
+    <style>
+        /* --- VARIABLES DE DISEÑO (SOPORTE PARA MODO CLARO/OSCURO) --- */
+        :root {
+            --primary: #ff5e00; /* Naranja Rappi */
+            --primary-hover: #e05300;
+            --secondary: #ffc400; /* Amarillo Comida Rápida */
+            --bg-light: #f8f9fa;
+            --bg-card: #ffffff;
+            --text-main: #1a1a1a;
+            --text-muted: #6c757d;
+            --border-color: #e9ecef;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --border-radius-sm: 8px;
+            --border-radius-md: 16px;
+            --border-radius-lg: 24px;
+            --cart-width: 420px;
+        }
+
+        /* Variables para el Modo Oscuro */
+        [data-theme="dark"] {
+            --bg-light: #121212;
+            --bg-card: #1e1e1e;
+            --text-main: #f8f9fa;
+            --text-muted: #a0a0a0;
+            --border-color: #2d2d2d;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.2);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.3);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.4);
+        }
+
+        /* --- ESTILOS GENERALES --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            transition: var(--transition);
+            line-height: 1.5;
+            overflow-x: hidden;
+            padding-bottom: 80px; /* Espacio para barra de navegación móvil */
+        }
+
+        /* Scrollbar Personalizado */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-light);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        /* --- COMPONENTES COMUNES --- */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: var(--border-radius-md);
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.95rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: #1a1a1a;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* --- ENCABEZADO Y HEADER --- */
+        header {
+            background-color: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 80px;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-svg {
+            width: 48px;
+            height: 48px;
+            fill: var(--primary);
+        }
+
+        .logo-text h1 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .logo-text h1 span {
+            color: var(--primary);
+        }
+
+        .logo-text p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .theme-toggle, .cart-trigger-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .theme-toggle:hover, .cart-trigger-btn:hover {
+            background-color: var(--border-color);
+            transform: scale(1.05);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background-color: var(--primary);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: bold;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* --- BANNER PRINCIPAL --- */
+        .hero-banner {
+            margin: 24px 0;
+        }
+
+        .banner-slider {
+            background: linear-gradient(135deg, #111111 0%, #2a2a2a 100%);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            position: relative;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            color: white;
+            padding: 40px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .banner-content {
+            z-index: 2;
+            max-width: 60%;
+        }
+
+        .banner-badge {
+            background-color: var(--primary);
+            color: white;
+            padding: 6px 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border-radius: 50px;
+            display: inline-block;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .banner-content h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 8px;
+        }
+
+        .banner-content p {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 16px;
+        }
+
+        .banner-illustration {
+            position: absolute;
+            right: 5%;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30%;
+            max-width: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .banner-illustration svg {
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+        }
+
+        /* --- FILTROS DE CATEGORÍA Y BUSCADOR --- */
+        .menu-controls {
+            margin-bottom: 24px;
+            position: sticky;
+            top: 80px;
+            background-color: var(--bg-light);
+            padding: 12px 0;
+            z-index: 90;
+            transition: var(--transition);
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 16px;
+            width: 100%;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 14px 20px 14px 50px;
+            border-radius: var(--border-radius-md);
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-card);
+            color: var(--text-main);
+            font-size: 0.95rem;
+            outline: none;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 94, 0, 0.15);
+        }
+
+        .search-box svg {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            width: 20px;
+            height: 20px;
+        }
+
+        .categories-container {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            scrollbar-width: none; /* Ocultar scrollbar Firefox */
+        }
+
+        .categories-container::-webkit-scrollbar {
+            display: none; /* Ocultar scrollbar Chrome/Safari */
+        }
+
+        .category-tab {
+            background-color: var(--bg-card);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 10px 18px;
+            border-radius: var(--border-radius-lg);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .category-tab svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        .category-tab.active {
+            background-color: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+        }
+
+        /* --- SECCIÓN DE PRODUCTOS --- */
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title span {
+            color: var(--primary);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        /* Tarjeta de Producto */
+        .product-card {
+            background-color: var(--bg-card);
+            border-radius: var(--border-radius-md);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary);
+        }
+
+        .product-image-container {
+            width: 100%;
+            height: 180px;
+            background-color: var(--bg-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image-container svg {
+            width: 80%;
+            height: 80%;
+            object-fit: contain;
+            transition: var(--transition);
+        }
+
+        .product-card:hover .product-image-container svg {
+            transform: scale(1.1) rotate(2deg);
+        }
+
+        .product-tag {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background-color: rgba(26, 26, 26, 0.85);
+            color: #ffffff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: var(--border-radius-sm);
+            text-transform: uppercase;
+            backdrop-filter: blur(4px);
+        }
+
+        .product-info {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 6px;
+        }
+
+        .star-svg {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .star-svg.filled {
+            fill: var(--secondary);
+        }
+
+        .star-svg.empty {
+            fill: #ccc;
+        }
+
+        .rating-value {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-left: 4px;
+        }
+
+        .product-name {
+            font-size: 1.1rem;
+            font-weight: 750;
+            margin-bottom: 6px;
+            color: var(--text-main);
+        }
+
+        .product-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            flex-grow: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .product-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: auto;
+        }
+
+        .product-price {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .add-to-cart-btn {
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .add-to-cart-btn:hover {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .add-to-cart-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        /* --- DETALLE DE EXCLUSIÓN DE PRODUCTOS --- */
+        .empty-results {
+            text-align: center;
+            padding: 48px 16px;
+            color: var(--text-muted);
+            grid-column: 1 / -1;
+        }
+
+        .empty-results svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        /* --- CARRITO LATERAL (OVERLAY Y PANEL) --- */
+        .cart-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            backdrop-filter: blur(4px);
+        }
+
+        .cart-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: calc(-1 * var(--cart-width));
+            width: 100%;
+            max-width: var(--cart-width);
+            height: 100%;
+            background-color: var(--bg-card);
+            z-index: 1001;
+            box-shadow: var(--shadow-lg);
+            transition: cubic-bezier(0.4, 0, 0.2, 1) 0.35s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cart-overlay.active .cart-sidebar {
+            right: 0;
+        }
+
+        .cart-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .cart-header h3 {
+            font-size: 1.2rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cart-header h3 svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--primary);
+        }
+
+        .close-cart-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--bg-light);
+            transition: var(--transition);
+        }
+
+        .close-cart-btn:hover {
+            color: var(--text-main);
+            background-color: var(--border-color);
+        }
+
+        .cart-items-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        /* Item del Carrito */
+        .cart-item {
+            display: flex;
+            gap: 12px;
+            padding-bottom: 16px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+            align-items: center;
+        }
+
+        .cart-item-img {
+            width: 60px;
+            height: 60px;
+            background-color: var(--bg-light);
+            border-radius: var(--border-radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cart-item-img svg {
+            width: 80%;
+            height: 80%;
+        }
+
+        .cart-item-details {
+            flex-grow: 1;
+        }
+
+        .cart-item-name {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 2px;
+            color: var(--text-main);
+        }
+
+        .cart-item-desc {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .cart-item-price {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .cart-item-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quantity-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            transition: var(--transition);
+        }
+
+        .quantity-btn:hover {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .item-quantity {
+            font-weight: 700;
+            font-size: 0.9rem;
+            min-width: 16px;
+            text-align: center;
+        }
+
+        .remove-item-btn {
+            background: none;
+            border: none;
+            color: #ff3b30;
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.7;
+            transition: var(--transition);
+        }
+
+        .remove-item-btn:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .cart-empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-muted);
+            text-align: center;
+            padding: 24px;
+        }
+
+        .cart-empty-state svg {
+            width: 72px;
+            height: 72px;
+            margin-bottom: 16px;
+            opacity: 0.4;
+        }
+
+        /* Resumen de Compra */
+        .cart-footer {
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
+            background-color: var(--bg-card);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .summary-row.total {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px dashed var(--border-color);
+        }
+
+        .summary-row.total .total-price {
+            color: var(--primary);
+        }
+
+        .note-field {
+            margin-bottom: 16px;
+        }
+
+        .note-field label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .note-field textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: var(--border-radius-sm);
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            resize: none;
+            outline: none;
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+
+        .note-field textarea:focus {
+            border-color: var(--primary);
+        }
+
+        .checkout-btn {
+            width: 100%;
+            height: 52px;
+            font-size: 1rem;
+        }
+
+        /* --- INFORMACIÓN DEL NEGOCIO --- */
+        .info-section {
+            background-color: var(--bg-card);
+            border-radius: var(--border-radius-lg);
+            border: 1px solid var(--border-color);
+            padding: 32px 24px;
+            margin-bottom: 48px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+        }
+
+        .info-block h4 {
+            font-size: 1.1rem;
+            font-weight: 750;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-main);
+        }
+
+        .info-block h4 svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--primary);
+        }
+
+        .info-block p, .info-block ul {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            list-style: none;
+        }
+
+        .info-block li {
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .social-btn {
+            background-color: var(--bg-light);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-main);
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+        }
+
+        .social-btn:hover {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        .social-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        /* --- NOTIFICACIÓN TOAST INFORMATIVO --- */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background-color: #1a1a1a;
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: var(--border-radius-md);
+            font-weight: 600;
+            z-index: 2000;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            transition: cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.4s;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--secondary);
+        }
+
+        /* --- BOTÓN FLOTANTE WHATSAPP --- */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background-color: #25d366;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-lg);
+            z-index: 500;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            background-color: #20ba5a;
+        }
+
+        .whatsapp-float svg {
+            width: 32px;
+            height: 32px;
+            fill: currentColor;
+        }
+
+        /* --- NAVEGACIÓN INFERIOR PARA MÓVILES (Estilo App) --- */
+        .bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 64px;
+            background-color: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+            z-index: 400;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .bottom-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.7rem;
+            font-weight: 600;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .bottom-nav-item.active {
+            color: var(--primary);
+        }
+
+        .bottom-nav-item svg {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 2px;
+            fill: currentColor;
+        }
+
+        /* --- FOOTER FINAL --- */
+        footer {
+            background-color: #111111;
+            color: #ffffff;
+            padding: 40px 0;
+            text-align: center;
+            font-size: 0.9rem;
+            border-top: 4px solid var(--primary);
+        }
+
+        footer p {
+            color: #888888;
+            margin-top: 8px;
+        }
+
+        footer .brand {
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: #ffffff;
+            margin-bottom: 12px;
+        }
+
+        footer .brand span {
+            color: var(--primary);
+        }
+
+        /* --- RESPONSIVIDAD (MEDIA QUERIES) --- */
+        @media (max-width: 768px) {
+            :root {
+                --cart-width: 100%;
+            }
+
+            body {
+                padding-bottom: 80px; /* Asegura espacio de la barra inferior */
+            }
+
+            .bottom-nav {
+                display: flex;
+            }
+
+            .hero-banner {
+                margin: 16px 0;
+            }
+
+            .banner-slider {
+                padding: 24px;
+                min-height: auto;
+            }
+
+            .banner-content {
+                max-width: 100%;
+                text-align: center;
+            }
+
+            .banner-illustration {
+                display: none; /* Ocultar en pantallas pequeñas */
+            }
+
+            .header-actions .cart-trigger-btn {
+                display: none; /* Ocultar el botón carrito arriba ya que está abajo */
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr; /* Una columna para visualización tipo lista en móvil */
+                gap: 16px;
+            }
+
+            .product-card {
+                flex-direction: row;
+                height: 150px;
+            }
+
+            .product-image-container {
+                width: 110px;
+                height: 100%;
+            }
+
+            .product-info {
+                padding: 12px;
+            }
+
+            .product-name {
+                font-size: 0.95rem;
+                margin-bottom: 4px;
+            }
+
+            .product-desc {
+                font-size: 0.75rem;
+                margin-bottom: 8px;
+                -webkit-line-clamp: 2;
+            }
+
+            .product-price {
+                font-size: 1.1rem;
+            }
+
+            .product-rating {
+                margin-bottom: 4px;
+            }
+
+            .info-section {
+                padding: 20px;
+            }
+
+            .whatsapp-float {
+                bottom: 80px; /* Subir el botón flotante para que no tape la barra inferior */
+                right: 16px;
+                width: 52px;
+                height: 52px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- --- TOAST DE NOTIFICACIONES --- -->
+    <div id="toast" class="toast" aria-live="polite">
+        <svg viewBox="0 0 24 24"><path d="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm-2,15L6,13l1.41-1.41L10,14.17l6.59-6.59L18,9Z"/></svg>
+        <span id="toast-message">Producto añadido al carrito</span>
+    </div>
+
+    <!-- --- ENCABEZADO --- -->
+    <header>
+        <div class="container header-container">
+            <div class="logo-area">
+                <!-- Logo Vectorial Premium Comida Rápida -->
+                <svg class="logo-svg" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M22,9C22,9 20,4 12,4C4,4 2,9 2,9C2,9 2,10 3,10H21C22,10 22,9 22,9M2,12C2,13 3,14 4,14H20C21,14 22,13 22,12V11H2V12M5,15C3,15 3,17 3,17V18C3,19.1 3.9,20 5,20H19C20.1,20 21,19.1 21,18V17C21,17 21,15 19,15H5Z"/>
+                </svg>
+                <div class="logo-text">
+                    <h1>Sumak <span>Mkhuna</span></h1>
+                    <p>Express • Comida con Sabor</p>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <!-- Selector de PDF de Menú de Google Drive -->
+                <a href="https://drive.google.com/file/d/1QNacsUq5iaI1XIRtd4LZKjQCbgcLkycM/view?usp=drivesdk" target="_blank" class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.85rem;" title="Ver Menú PDF Completo">
+                    <svg style="width:16px; height:16px; fill:currentColor" viewBox="0 0 24 24"><path d="M6 2c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6H6zm7 7V3.5L18.5 9H13z"/></svg>
+                    Menú PDF
+                </a>
+                
+                <!-- Botón de Modo Oscuro -->
+                <button class="theme-toggle" id="theme-btn" aria-label="Cambiar tema">
+                    <svg id="theme-sun" style="display:none;" viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                    <svg id="theme-moon" viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                </button>
+                
+                <!-- Botón de Carrito (Desktop) -->
+                <button class="cart-trigger-btn" id="cart-btn" aria-label="Ver carrito">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                    <span class="cart-count" id="cart-count">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <!-- --- BANNER PROMOCIONAL ROTATIVO --- -->
+        <section class="hero-banner" id="banner-section">
+            <div class="banner-slider">
+                <div class="banner-content">
+                    <span class="banner-badge">Sabor Increíble</span>
+                    <h2>¡Envío Gratis hoy!</h2>
+                    <p>Por compras mayores a $15, recibe tu pedido sin costo de envío. ¡Sabor Express garantizado!</p>
+                    <a href="#productos" class="btn btn-secondary">Pedir Ahora</a>
+                </div>
+                <div class="banner-illustration">
+                    <svg viewBox="0 0 100 100">
+                        <!-- Ilustración Hamburguesa SVG -->
+                        <path d="M15,45 Q50,20 85,45 Z" fill="#ff9f1c"/>
+                        <rect x="12" y="47" width="76" height="6" rx="3" fill="#ffd166"/>
+                        <path d="M10,55 Q20,62 30,55 Q40,48 50,55 Q60,62 70,55 Q80,48 90,55" fill="none" stroke="#2ec4b6" stroke-width="4"/>
+                        <rect x="15" y="60" width="70" height="10" rx="2" fill="#e71d36"/>
+                        <path d="M15,72 Q50,85 85,72 Z" fill="#ff9f1c"/>
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <!-- --- CONTROLES DE MENÚ: BUSCADOR Y CATEGORÍAS --- -->
+        <section class="menu-controls" id="productos">
+            <!-- Buscador -->
+            <div class="search-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="search-input" placeholder="¿Qué se te antoja hoy? Busca aquí...">
+            </div>
+
+            <!-- Tabs de Categorías -->
+            <div class="categories-container" id="categories-tabs">
+                <button class="category-tab active" data-category="todos">
+                    Todos
+                </button>
+                <button class="category-tab" data-category="carta">
+                    Platos a la Carta
+                </button>
+                <button class="category-tab" data-category="rapida">
+                    Hamburguesas & Picadas
+                </button>
+                <button class="category-tab" data-category="almuerzos">
+                    Almuerzos
+                </button>
+                <button class="category-tab" data-category="bebidas">
+                    Bebidas y Postres
+                </button>
+            </div>
+        </section>
+
+        <!-- --- SECCIÓN DE PRODUCTOS --- -->
+        <section>
+            <h2 class="section-title">Nuestro <span>Menú</span></h2>
+            <div class="products-grid" id="products-grid">
+                <!-- Se inyecta dinámicamente con JS -->
+            </div>
+        </section>
+
+        <!-- --- INFORMACIÓN ADICIONAL DEL NEGOCIO --- -->
+        <section class="info-section">
+            <div class="info-grid">
+                <div class="info-block">
+                    <h4>
+                        <svg viewBox="0 0 24 24"><path d="M12,2A10,10,0,0,0,2,12c0,5.25,4.2,9.11,8,13.67a2.51,2.51,0,0,0,4,0c3.8-4.56,8-8.42,8-13.67A10,10,0,0,0,12,2Zm0,14a4,4,0,1,1,4-4A4,4,0,0,1,12,16Z"/></svg>
+                        Contacto y Ubicación
+                    </h4>
+                    <p style="margin-bottom: 8px;"><strong>Dirección:</strong> Orellana y Río Aguarico, Shushufindi, Sucumbíos, Ecuador.</p>
+                    <p><strong>Teléfono:</strong> <a href="tel:+593986126397" style="color: var(--primary); text-decoration: none; font-weight: 700;">+593 98 612 6397</a></p>
+                    <p style="margin-top: 8px;">¡Servicio a domicilio rápido en toda la zona central de Shushufindi!</p>
+                </div>
+                <div class="info-block">
+                    <h4>
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z"/></svg>
+                        Horarios de Atención
+                    </h4>
+                    <ul>
+                        <li style="margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--border-color); padding-bottom: 4px;">
+                            <span>🍞 Desayuno:</span> 
+                            <span style="font-weight: 700; color: var(--text-main);">5H00 - 8H30</span>
+                        </li>
+                        <li style="margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--border-color); padding-bottom: 4px;">
+                            <span>🍝 Almuerzo:</span> 
+                            <span style="font-weight: 700; color: var(--text-main);">11H00 - 14H00</span>
+                        </li>
+                        <li style="display: flex; justify-content: space-between; align-items: center;">
+                            <span>🍔 Cena:</span> 
+                            <span style="font-weight: 700; color: var(--text-main);">17H00 - 20H30</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h4>
+                        <svg viewBox="0 0 24 24"><path d="M18 2a3 3 0 0 0-3 3v2H5a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-8a3 3 0 0 0-3-3h-1V5a3 3 0 0 0-3-3zm1 16a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-8a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8zm-4-11V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2h-4z"/></svg>
+                        Síguenos & Comparte
+                    </h4>
+                    <p>Encuéntranos en redes y descarga nuestro folleto digital:</p>
+                    <div class="social-links">
+                        <a href="https://drive.google.com/file/d/1QNacsUq5iaI1XIRtd4LZKjQCbgcLkycM/view?usp=drivesdk" target="_blank" class="social-btn" title="Descargar Catálogo Completo Google Drive">
+                            <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+                        </a>
+                        <a href="https://www.facebook.com/share/18U6ptap4G/" target="_blank" class="social-btn" title="Facebook">
+                            <svg viewBox="0 0 24 24"><path d="M12 2.04c-5.5 0-10 4.49-10 10.02 0 5 3.66 9.15 8.44 9.9V15H8.3v-3h2.14V9.67c0-2.11 1.25-3.28 3.17-3.28.93 0 1.9.17 1.9.17v2.1h-1.07c-1.05 0-1.37.65-1.37 1.32V12h2.36l-.38 3h-1.98v6.96c4.78-.75 8.44-4.9 8.44-9.9 0-5.53-4.5-10.02-10-10.02z"/></svg>
+                        </a>
+                        <a href="#" class="social-btn" title="Instagram">
+                            <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- --- CARRITO DE COMPRAS SIDEBAR --- -->
+    <div class="cart-overlay" id="cart-overlay">
+        <aside class="cart-sidebar" aria-label="Carrito de compras">
+            <div class="cart-header">
+                <h3>
+                    <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                    Tu Pedido
+                </h3>
+                <button class="close-cart-btn" id="close-cart" aria-label="Cerrar Carrito">
+                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+
+            <!-- Contenedor de Items -->
+            <div class="cart-items-container" id="cart-items">
+                <!-- Se inyecta dinámicamente con JS -->
+            </div>
+
+            <!-- Resumen y Checkout -->
+            <div class="cart-footer" id="cart-footer-area">
+                <div class="note-field">
+                    <label for="order-notes">Notas / Especificaciones (Opcional):</label>
+                    <textarea id="order-notes" rows="2" placeholder="Ej: Sin cebolla, filete con patacones en lugar de papas, etc."></textarea>
+                </div>
+                
+                <div class="summary-row">
+                    <span>Subtotal:</span>
+                    <span id="cart-subtotal">$0.00</span>
+                </div>
+                <div class="summary-row">
+                    <span>Envío:</span>
+                    <span id="cart-delivery">¡Gratis!</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total a Pagar:</span>
+                    <span class="total-price" id="cart-total">$0.00</span>
+                </div>
+
+                <button class="btn btn-primary checkout-btn" id="checkout-btn">
+                    <svg style="width: 20px; height: 20px; fill: currentColor;" viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.817 9.817 0 0 0 12.04 2zm5.78 14.15c-.24.67-1.39 1.29-1.9 1.37-.46.07-1.06.13-3.11-.72-2.62-1.07-4.31-3.73-4.44-3.9-.13-.17-1.04-1.38-1.04-2.63s.65-1.87.88-2.13c.24-.26.51-.33.68-.33.17 0 .34.01.49.02.15.01.36-.06.57.44.22.52.75 1.82.81 1.95.07.13.11.29.02.48-.08.19-.13.3-.26.46-.13.15-.28.35-.4.5-.14.17-.29.35-.12.65.17.29.75 1.24 1.6 2 .1.09.19.14.3.21.11.07.24.08.36-.02s.53-.62.67-.83c.14-.21.28-.18.47-.11.19.07 1.2.57 1.41.67.21.1.35.15.4.24.05.09.05.52-.19 1.19z"/></svg>
+                    Enviar Pedido por WhatsApp
+                </button>
+            </div>
+        </aside>
+    </div>
+
+    <!-- --- BOTÓN FLOTANTE WHATSAPP --- -->
+    <a href="https://wa.me/593986126397?text=Hola!%20Quiero%20ver%20el%20men%C3%BA" target="_blank" class="whatsapp-float" id="whatsapp-float" aria-label="Escríbenos por WhatsApp">
+        <svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.817 9.817 0 0 0 12.04 2zm5.78 14.15c-.24.67-1.39 1.29-1.9 1.37-.46.07-1.06.13-3.11-.72-2.62-1.07-4.31-3.73-4.44-3.9-.13-.17-1.04-1.38-1.04-2.63s.65-1.87.88-2.13c.24-.26.51-.33.68-.33.17 0 .34.01.49.02.15.01.36-.06.57.44.22.52.75 1.82.81 1.95.07.13.11.29.02.48-.08.19-.13.3-.26.46-.13.15-.28.35-.4.5-.14.17-.29.35-.12.65.17.29.75 1.24 1.6 2 .1.09.19.14.3.21.11.07.24.08.36-.02s.53-.62.67-.83c.14-.21.28-.18.47-.11.19.07 1.2.57 1.41.67.21.1.35.15.4.24.05.09.05.52-.19 1.19z"/></svg>
+    </a>
+
+    <!-- --- NAVEGACIÓN INFERIOR PARA MÓVILES --- -->
+    <nav class="bottom-nav">
+        <button class="bottom-nav-item active" onclick="scrollToId('productos')">
+            <svg viewBox="0 0 24 24"><path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/></svg>
+            Menú
+        </button>
+        <button class="bottom-nav-item" id="bottom-cart-btn" onclick="toggleCart(true)">
+            <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+            Carrito
+            <span class="cart-count" id="bottom-cart-count">0</span>
+        </button>
+        <a href="https://drive.google.com/file/d/1QNacsUq5iaI1XIRtd4LZKjQCbgcLkycM/view?usp=drivesdk" target="_blank" class="bottom-nav-item">
+            <svg viewBox="0 0 24 24"><path d="M6 2c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6H6zm7 7V3.5L18.5 9H13z"/></svg>
+            PDF Menú
+        </a>
+    </nav>
+
+    <!-- --- FOOTER --- -->
+    <footer>
+        <div class="container">
+            <div class="brand">Sumak <span>Mkhuna</span> Express</div>
+            <p>Comida deliciosa al instante. Hecho en Ecuador.</p>
+            <p>© 2026 Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- --- SCRIPT PRINCIPAL JAVASCRIPT --- -->
+    <script>
+        // --- BASE DE DATOS DE PRODUCTOS (12 ÍTEMS COMPLETOS) ---
+        const products = [
+            {
+                id: 1,
+                name: "Filete de Pollo a la Plancha",
+                category: "carta",
+                price: 8.00,
+                desc: "Pechuga tierna a la plancha, ensalada fresca, papas fritas y salsas de la casa. Arroz opcional.",
+                rating: 4.8,
+                votes: 45,
+                // Ilustración SVG de Pollo
+                svg: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#ffe0b2"/><path d="M50 20 C25 20, 20 50, 45 75 C70 65, 80 40, 50 20 Z" fill="#b5651d"/><path d="M35 45 C30 45, 25 55, 35 65 Z" fill="#ffd166"/></svg>`
+            },
+            {
+                id: 2,
+                name: "Costillas de Cerdo en Salsa BBQ",
+                category: "carta",
+                price: 10.00,
+                desc: "Costilla de cerdo premium (300gr) bañada en salsa BBQ ahumada, papas fritas o patacones, ensalada fría.",
+                rating: 4.9,
+                votes: 82,
+                // Ilustración BBQ Ribs
+                svg: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#ffcdd2"/><path d="M20 40 L80 40 L80 60 L20 60 Z" fill="#8d6e63" rx="5"/><rect x="25" y="35" width="8" height="30" rx="4" fill="#eeeeee"/><rect x="45" y="35" width="8" height="30" rx="4" fill="#eeeeee"/><rect x="65" y="35" width="8" height="30" rx="4" fill="#eeeeee"/><path d="M20 45 Q50 35 80 45 Q75 55 20 45" fill="#e65100"/></svg>`
+            },
+            {
+                id: 3,
+                name: "Camarones Reventados",
+                category: "carta",
+                price: 12.00,
+                desc: "Camarones crujientes (200gr), patacones crujientes de plátano verde, ensalada fresca, arroz opcional.",
+                rating: 4.7,
+                votes: 38,
+                // Ilustración Shrimp
+                svg: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#e0f7fa"/><path d="M40 30 Q65 15 75 40 Q80 55 55 65" fill="none" stroke="#ff8a65" stroke-width="12" stroke-linecap="round"/><path d="M72 40 L82 35 L78 48 Z" fill="#ff5722"/></svg>`
+            },
+            {
+                id: 4,
+                name: "Lomo a la Plancha",
+                category: "carta",
+                price: 10.00,
+                desc: "Lomo fino de res (200gr) asado a la perfección, ensalada fría de lechuga, tomate, pepino y papas fritas crujientes.",
+                rating: 4.8,
+                votes: 56,
+                // Ilustración Steak
+                svg: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#f5f5f5"/><path d="M30 40 C30 30, 70 30, 75 45 C80 60, 40 75, 30 60 Z" fill="#a1887f"/><path d="M38 48 Q50 40 68 55" fill="none" stroke="#ffffff" stroke-width="4"/><path d="M42 58 Q55 48 60 62" fill="none" stroke="#ffffff" stroke-width="3"/></svg>`
+            },
+            {
+                id: 5,
+                name: "Hamburguesa Sencilla",
+                category: "rapida",
+                price: 4.00,
+                desc: "Esponjoso pan, carne de res molida y sazonada (200gr), lechuga fresca, tomate, papas al hilo, salsa especial y mayonesa.",
+                rating: 4.6,
+                votes: 112,
+                // Ilustración Hamburguesa
+                svg: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#ffe0b2"/><path d="M25 45 Q50 25 75 45 Z" fill="#e65100"/><rect x="23" y="47" width="54" height="4" rx="2" fill="#ffd54f"/><rect x="25" y="53" width="50" height="8" rx="3" fill="#8d6e63"/><path d="M25 63 Q50 72 75 63 Z" fill="#e65100"/></svg>`
+            },
+            {
+                id: 6,
+                name: "Pollo Frito",
+                category: "rapida",
+                price: 4.00,
+                desc: "Delicioso pollo frito crujiente por fuera y jugoso por dentro, acompañado con mayonesa casera y papas fritas.",
+                rating: 4.5,
+                votes: 94,
+                // Ilustración Fried Chicken
+                svg: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#fff9c4"/><path d="M35 35 Q55 25 65 45 Q75 65 55 75 Q35 65 35 35 Z" fill="#ffb74d"/><path d="M40 70 L25 85 M48 72 L38 90" fill="none" stroke="#ffb74d" stroke-width="8" stroke-linecap="round"/></svg>`
+            },
+            {
+                id: 7,
+                name: "Alitas de Pollo en Salsa BBQ",
+                category: "rapida",
+                price: 8.00,
+                desc: "Seis alitas de pollo doradas bañadas en nuestra salsa secreta BBQ, servido con papas fritas doraditas.",
+                rating: 4.9,
+                votes: 120,
+                svg: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#ffe0b2"/><path d="M30 40 Q55 20 70 35 Q85 50 65 70" fill="none" stroke="#d84315" stroke-width="12" stroke-linecap="round"/><path d="M28 38 L15 25" fill="none" stroke="#eeeeee" stroke-width="8" stroke-linecap="round"/></svg>`
+            },
+            {
+                id: 8,
+                name: "Picaditas (Mediana)",
+                category: "rapida",
+                price: 25.00,
+                desc: "Para compartir: pollo (400g), carne de res (400g), 8 chorizos, camarón (200g), patacones crujientes, papas fritas y salsas mixtas.",
+                rating: 5.0,
+                votes: 67,
+                svg: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#ffebee"/><ellipse cx="50" cy="55" rx="35" ry="25" fill="#795548"/><rect x="30" y="42" width="12" height="12" rx="3" fill="#ffb74d"/><rect x="48" y="38" width="14" height="8" rx="2" fill="#e57373"/><circle cx="55" cy="55" r="8" fill="#ff8a65"/></svg>`
+            },
+            {
+                id: 9,
+                name: "Almuerzo del Día",
+                category: "almuerzos",
+                price: 4.50,
+                desc: "Menú diario balanceado que incluye sopa caliente, plato fuerte (segundo), postre dulce y vaso de jugo fresco.",
+                rating: 4.6,
+                votes: 154,
+                svg: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#e8f5e9"/><path d="M20 45 C20 30, 80 30, 80 45 Z" fill="#a1887f"/><rect x="15" y="48" width="70" height="6" rx="3" fill="#81c784"/><circle cx="50" cy="35" r="10" fill="#ffd54f"/></svg>`
+            },
+            // --- AGREGADOS PARA COMPLETAR LOS 12 PRODUCTOS ---
+            {
+                id: 10,
+                name: "Jugo Natural de Maracuyá",
+                category: "bebidas",
+                price: 2.00,
+                desc: "Refrescante jugo preparado al instante con pulpa 100% natural de maracuyá y hielo.",
+                rating: 4.7,
+                votes: 43,
+                svg: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#fffde7"/><path d="M35 30 L65 30 L60 80 L40 80 Z" fill="#ffd54f" opacity="0.8"/><line x1="50" y1="20" x2="65" y2="75" stroke="#ff1744" stroke-width="4" stroke-linecap="round"/></svg>`
+            },
+            {
+                id: 11,
+                name: "Gaseosa Personal",
+                category: "bebidas",
+                price: 1.50,
+                desc: "Gaseosa bien helada a elección (Coca-Cola, Fanta, Fioravanti) de tamaño personal.",
+                rating: 4.4,
+                votes: 59,
+                svg: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#e1f5fe"/><path d="M40 25 L60 25 L58 85 L42 85 Z" fill="#e53935"/><rect x="45" y="15" width="10" height="10" rx="2" fill="#cfd8dc"/></svg>`
+            },
+            {
+                id: 12,
+                name: "Torta de Tres Leches",
+                category: "bebidas",
+                price: 3.50,
+                desc: "Esponjoso bizcocho bañado en mezcla de tres leches y coronado con delicioso merengue y canela.",
+                rating: 4.9,
+                votes: 75,
+                svg: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#fdf5e6"/><path d="M25 60 L75 60 L70 80 L30 80 Z" fill="#d7ccc8"/><path d="M23 60 Q50 50 77 60 L77 45 Q50 35 23 45 Z" fill="#fff8e1"/><circle cx="50" cy="42" r="5" fill="#ff1744"/></svg>`
+            }
+        ];
+
+        // --- ESTADO DEL CARRITO ---
+        let cart = [];
+
+        // --- MANEJO DE CONFIGURACIÓN Y SELECTORES ---
+        const productsGrid = document.getElementById('products-grid');
+        const searchInput = document.getElementById('search-input');
+        const categoryTabs = document.getElementById('categories-tabs');
+        
+        const cartOverlay = document.getElementById('cart-overlay');
+        const cartItemsContainer = document.getElementById('cart-items');
+        const cartCountEl = document.getElementById('cart-count');
+        const bottomCartCountEl = document.getElementById('bottom-cart-count');
+        const cartSubtotalEl = document.getElementById('cart-subtotal');
+        const cartTotalEl = document.getElementById('cart-total');
+        const orderNotes = document.getElementById('order-notes');
+        const checkoutBtn = document.getElementById('checkout-btn');
+        
+        const themeBtn = document.getElementById('theme-btn');
+        const themeSun = document.getElementById('theme-sun');
+        const themeMoon = document.getElementById('theme-moon');
+
+        let activeCategory = 'todos';
+        let searchQuery = '';
+
+        // --- SISTEMA DE NOTIFICACIONES ---
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        // --- RENDERIZADO DE PRODUCTOS ---
+        function renderProducts() {
+            productsGrid.innerHTML = '';
+            
+            // Filtrar productos
+            const filtered = products.filter(product => {
+                const matchesCategory = activeCategory === 'todos' || product.category === activeCategory;
+                const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                      product.desc.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchesCategory && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                productsGrid.innerHTML = `
+                    <div class="empty-results">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <p>No encontramos platillos que coincidan con tu búsqueda.</p>
+                        <p style="font-size: 0.8rem; margin-top: 4px;">Intenta buscando otra delicia o cambia de categoría.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(product => {
+                const card = document.createElement('article');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    <div class="product-image-container">
+                        ${product.svg}
+                        <span class="product-tag">${product.category}</span>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-rating">
+                            ${generateStars(product.id, Math.round(product.rating))}
+                            <span class="rating-value">(${product.votes})</span>
+                        </div>
+                        <h3 class="product-name">${product.name}</h3>
+                        <p class="product-desc">${product.desc}</p>
+                        <div class="product-footer">
+                            <span class="product-price">$${product.price.toFixed(2)}</span>
+                            <button class="add-to-cart-btn" onclick="addToCart(${product.id})" aria-label="Agregar ${product.name} al pedido">
+                                <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                productsGrid.appendChild(card);
+            });
+        }
+
+        // --- SISTEMA DE VALORACIÓN CON ESTRELLAS INTERACTIVAS ---
+        function generateStars(productId, rating) {
+            let starsHTML = '';
+            for (let i = 1; i <= 5; i++) {
+                const isFilled = i <= rating;
+                starsHTML += `
+                    <svg class="star-svg ${isFilled ? 'filled' : 'empty'}" 
+                         onclick="rateProduct(${productId}, ${i})" 
+                         viewBox="0 0 24 24">
+                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                    </svg>
+                `;
+            }
+            return starsHTML;
+        }
+
+        window.rateProduct = function(productId, ratingValue) {
+            const product = products.find(p => p.id === productId);
+            if (product) {
+                // Actualiza dinámicamente simulando guardar en servidor
+                const currentTotal = product.rating * product.votes;
+                product.votes += 1;
+                product.rating = parseFloat(((currentTotal + ratingValue) / product.votes).toFixed(1));
+                renderProducts();
+                showToast(`¡Gracias! Calificaste con ${ratingValue} estrellas.`);
+            }
+        };
+
+        // --- MANEJO DEL CARRITO ---
+        window.addToCart = function(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const existingItem = cart.find(item => item.id === productId);
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    ...product,
+                    quantity: 1
+                });
+            }
+
+            updateCart();
+            showToast(`Añadido: ${product.name}`);
+        };
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCart();
+        }
+
+        function changeQuantity(productId, amount) {
+            const item = cart.find(i => i.id === productId);
+            if (!item) return;
+
+            item.quantity += amount;
+            if (item.quantity <= 0) {
+                removeFromCart(productId);
+            } else {
+                updateCart();
+            }
+        }
+
+        function updateCart() {
+            // Actualizar contadores visuales
+            const totalCount = cart.reduce((acc, item) => acc + item.quantity, 0);
+            cartCountEl.textContent = totalCount;
+            bottomCartCountEl.textContent = totalCount;
+
+            // Renderizar items en sidebar
+            cartItemsContainer.innerHTML = '';
+
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = `
+                    <div class="cart-empty-state">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                        <p>Tu carrito está vacío.</p>
+                        <p style="font-size: 0.8rem; margin-top: 4px;">Navega por nuestro menú y agrega tus platos favoritos.</p>
+                    </div>
+                `;
+                cartSubtotalEl.textContent = "$0.00";
+                cartTotalEl.textContent = "$0.00";
+                return;
+            }
+
+            cart.forEach(item => {
+                const cartItem = document.createElement('div');
+                cartItem.className = 'cart-item';
+                cartItem.innerHTML = `
+                    <div class="cart-item-img">
+                        ${item.svg}
+                    </div>
+                    <div class="cart-item-details">
+                        <h4 class="cart-item-name">${item.name}</h4>
+                        <p class="cart-item-desc">$${item.price.toFixed(2)} c/u</p>
+                        <span class="cart-item-price">$${(item.price * item.quantity).toFixed(2)}</span>
+                    </div>
+                    <div class="cart-item-controls">
+                        <button class="quantity-btn" onclick="changeQuantity(${item.id}, -1)">-</button>
+                        <span class="item-quantity">${item.quantity}</span>
+                        <button class="quantity-btn" onclick="changeQuantity(${item.id}, 1)">+</button>
+                        <button class="remove-item-btn" onclick="removeFromCart(${item.id})" aria-label="Eliminar del pedido">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                        </button>
+                    </div>
+                `;
+                cartItemsContainer.appendChild(cartItem);
+            });
+
+            // Calcular Precios
+            const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+            cartSubtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+            cartTotalEl.textContent = `$${subtotal.toFixed(2)}`;
+        }
+
+        // --- ENVIAR PEDIDO POR WHATSAPP ---
+        function sendWhatsAppOrder() {
+            if (cart.length === 0) {
+                showToast("Agrega al menos un producto para enviar un pedido.");
+                return;
+            }
+
+            const businessNumber = "593986126397"; // WhatsApp Sumak Mkhuna Express
+            
+            // Construir el cuerpo del mensaje
+            let message = `*Sumak Mkhuna Express - NUEVO PEDIDO*\n`;
+            message += `--------------------------------------\n\n`;
+
+            cart.forEach((item, index) => {
+                message += `*${index + 1}. ${item.name}* (x${item.quantity})\n`;
+                message += `   Precio: $${(item.price * item.quantity).toFixed(2)}\n\n`;
+            });
+
+            const total = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+            
+            message += `--------------------------------------\n`;
+            if (orderNotes.value.trim() !== '') {
+                message += `*Notas:* ${orderNotes.value.trim()}\n\n`;
+            }
+            message += `*Total a Pagar:* $${total.toFixed(2)}\n\n`;
+            message += `_Por favor confírmenme el tiempo estimado de entrega e indicaciones para el pago. ¡Muchas gracias!_`;
+
+            // Codificar el URI
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappUrl = `https://wa.me/${businessNumber}?text=${encodedMessage}`;
+
+            // Abrir en nueva ventana
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // --- ABRIENDO / CERRANDO PANEL DEL CARRITO ---
+        function toggleCart(open) {
+            if (open) {
+                cartOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden'; // Detener scroll en body
+            } else {
+                cartOverlay.classList.remove('active');
+                document.body.style.overflow = 'auto'; // Habilitar scroll
+            }
+        }
+
+        // --- MANEJO DE BUSCADOR Y CATEGORÍAS ---
+        searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            renderProducts();
+        });
+
+        categoryTabs.addEventListener('click', (e) => {
+            const tab = e.target.closest('.category-tab');
+            if (!tab) return;
+
+            // Desactivar todos los tabs
+            document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+
+            activeCategory = tab.dataset.category;
+            renderProducts();
+        });
+
+        // Utilidad para scrollear hacia un ID suavemente
+        window.scrollToId = function(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth' });
+            }
+        };
+
+        // --- SISTEMA DE TEMA (MODO OSCURO / CLARO) ---
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                themeSun.style.display = 'block';
+                themeMoon.style.display = 'none';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                themeSun.style.display = 'none';
+                themeMoon.style.display = 'block';
+            }
+        }
+
+        themeBtn.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+                themeSun.style.display = 'none';
+                themeMoon.style.display = 'block';
+                showToast("Modo Claro activado");
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                themeSun.style.display = 'block';
+                themeMoon.style.display = 'none';
+                showToast("Modo Oscuro activado");
+            }
+        });
+
+        // --- EVENT LISTENERS ---
+        document.getElementById('cart-btn').addEventListener('click', () => toggleCart(true));
+        document.getElementById('close-cart').addEventListener('click', () => toggleCart(false));
+        cartOverlay.addEventListener('click', (e) => {
+            if (e.target === cartOverlay) toggleCart(false);
+        });
+        checkoutBtn.addEventListener('click', sendWhatsAppOrder);
+
+        // --- INICIALIZAR ---
+        window.onload = function() {
+            initTheme();
+            renderProducts();
+            updateCart();
+        };
+    </script>
+</body>
+</html>
