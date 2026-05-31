@@ -1,10 +1,4 @@
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sumak Mkhuna Express | Menú Digital & Delivery</title>
-    
-    <!-- Metaetiquetas SEO básicas -->
+  <!-- Metaetiquetas SEO básicas -->
     <meta name="description" content="Pide la mejor comida a domicilio en Sumak Mkhuna Express. Hamburguesas, platos a la carta, alitas, picadas y almuerzos del día directo a tu hogar.">
     <meta name="keywords" content="comida a domicilio, delivery, hamburguesas, platos a la carta, alitas, picadas, almuerzos, Sumak Mkhuna Express">
     <meta name="author" content="Sumak Mkhuna Express">
